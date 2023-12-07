@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://guialfaro.github.io/sitemap.xml
