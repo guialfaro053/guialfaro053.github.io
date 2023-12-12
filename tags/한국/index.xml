@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Korea on Guillermo Alfaro</title>
-    <link>https://guialfaro053.github.io/korea/</link>
-    <description>Recent content in Korea on Guillermo Alfaro</description>
+    <title>한국 on Guillermo Alfaro</title>
+    <link>https://guialfaro053.github.io/tags/%ED%95%9C%EA%B5%AD/</link>
+    <description>Recent content in 한국 on Guillermo Alfaro</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://guialfaro053.github.io/korea/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language><atom:link href="https://guialfaro053.github.io/tags/%ED%95%9C%EA%B5%AD/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>한국생활</title>
       <link>https://guialfaro053.github.io/korea/data1/</link>
