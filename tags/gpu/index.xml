@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>NLP on Guillermo Alfaro</title>
-    <link>https://guialfaro053.github.io/nlp/</link>
-    <description>Recent content in NLP on Guillermo Alfaro</description>
+    <title>GPU on Guillermo Alfaro</title>
+    <link>https://guialfaro053.github.io/tags/gpu/</link>
+    <description>Recent content in GPU on Guillermo Alfaro</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://guialfaro053.github.io/nlp/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language><atom:link href="https://guialfaro053.github.io/tags/gpu/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building Docker Containers for GPU Applications</title>
       <link>https://guialfaro053.github.io/nlp/data1/</link>
