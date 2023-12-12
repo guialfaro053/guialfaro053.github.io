@@ -25,11 +25,7 @@
   </url><url>
     <loc>https://guialfaro053.github.io/archive/</loc>
   </url><url>
-<<<<<<< HEAD
-    <loc>https://guialfaro053.github.io/nlp/nlp1/</loc>
-=======
     <loc>https://guialfaro053.github.io/nlp/data1/</loc>
->>>>>>> b4a1aca (Docker tutorial)
   </url><url>
     <loc>https://guialfaro053.github.io/tags/docker/</loc>
   </url><url>
@@ -50,6 +46,8 @@
     <loc>https://guialfaro053.github.io/korea/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/location/</loc>
+  </url><url>
+    <loc>https://guialfaro053.github.io/tags/nlp/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/nlp/</loc>
   </url><url>
