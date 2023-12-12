@@ -5,17 +5,7 @@
     <link>https://guialfaro053.github.io/papers/</link>
     <description>Recent content in Papers on Guillermo Alfaro</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Wed, 16 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://guialfaro053.github.io/papers/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Course Title 2</title>
-      <link>https://guialfaro053.github.io/papers/course2/</link>
-      <pubDate>Wed, 16 Jun 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://guialfaro053.github.io/papers/course2/</guid>
-      <description>This undergraduate course presents many new things.</description>
-    </item>
-    
+    <language>en</language><atom:link href="https://guialfaro053.github.io/papers/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Interesting Paper 1</title>
       <link>https://guialfaro053.github.io/papers/course1/</link>

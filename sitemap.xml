@@ -2,36 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://guialfaro053.github.io/papers/course2/</loc>
-    <lastmod>2021-06-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://guialfaro053.github.io/</loc>
-    <lastmod>2021-06-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://guialfaro053.github.io/tags/keyword-4/</loc>
-    <lastmod>2021-06-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://guialfaro053.github.io/tags/keyword-5/</loc>
-    <lastmod>2021-06-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://guialfaro053.github.io/tags/keyword-6/</loc>
-    <lastmod>2021-06-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://guialfaro053.github.io/papers/</loc>
-    <lastmod>2021-06-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://guialfaro053.github.io/tags/</loc>
-    <lastmod>2021-06-16T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://guialfaro053.github.io/archive/</loc>
   </url><url>
-    <loc>https://guialfaro053.github.io/nlp/data1/</loc>
+    <loc>https://guialfaro053.github.io/nlp/nlp1/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/tags/docker/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/projects/paper1/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/tags/gpu/</loc>
+  </url><url>
+    <loc>https://guialfaro053.github.io/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/papers/course1/</loc>
   </url><url>
@@ -53,7 +34,11 @@
   </url><url>
     <loc>https://guialfaro053.github.io/officehours/</loc>
   </url><url>
+    <loc>https://guialfaro053.github.io/papers/</loc>
+  </url><url>
     <loc>https://guialfaro053.github.io/projects/</loc>
+  </url><url>
+    <loc>https://guialfaro053.github.io/tags/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/tags/%ED%95%9C%EA%B5%AD/</loc>
   </url><url>

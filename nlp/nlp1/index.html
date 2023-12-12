@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>Building Docker Containers for GPU Applications | Guillermo Alfaro</title>
-<meta name="keywords" content="Docker, GPU">
+<meta name="keywords" content="Docker, GPU, NLP">
 <meta name="description" content="Description on some hacks to build a Docker containers that use GPU ">
 <meta name="author" content="Guillermo Alfaro">
 <link rel="canonical" href="https://guialfaro053.github.io/nlp/nlp1/">
@@ -68,10 +68,10 @@
   "name": "Building Docker Containers for GPU Applications",
   "description": "Description on some hacks to build a Docker containers that use GPU ",
   "keywords": [
-    "Docker", "GPU"
+    "Docker", "GPU", "NLP"
   ],
-  "articleBody": "Overview The dataset contains information on this and that in various contries. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nDownload Dataset: Country 1 Dataset: Country 2 Dataset: Country 3 Source of data Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nDescription of variables Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Using the data with software 1 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nUsing the data with software 2 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n",
-  "wordCount" : "368",
+  "articleBody": "Overview Docker is a great tool for isolating pieces of code or a whole app. You can think of it as a super tiny but efficient virtual machine that has the purpose a running a specific piece of code. Many Docker containers start by downloading a base image and start building of top of it. Similar to downloading an operative system and adding the programs and application you want to use.\nIn AI development, building Docker containers plays a fundamental role in production. In practice, it saves us a lot of work having Docker containers that can readily run our code instead of running settings and pip install -r requirements.txt every single time, and on top of that, Docker containers are production-friendly!\nIt gets a little bit tricky when our code utilizes GPU. Since we are a building an isolated container that can run in any computer with any specifications, we try to generalize many pieces of code. What I mean by this is that the our code should be able to work in any machine, and thus, we have to build our code as machine-agnostic as possible. If you have worked with applications that use CUDA, more often than not, we have to specify versions, directories, etc., so that our code can run. CUDA and cuDNN can be hard to get used to at first. So, I decided to do a hands-on example of building a Docker container where CUDA is needed.\nTask We will containerize a really nice library used for inference of LLMs: vLLM If you are not familiarized with this library, tldr: It is a library that leverages paged attention for high throughput by strategically allocating KV caching in memory.\nContainerization The first step for containerizng vLLM is knowing the requirements needed to run it. Upon close inspection in the library we see that we need CUDA $18.1$ or CUDA $12.1$. I’d suggest we go with CUDA $12.1$ as vLLM is more optimized in that environment as well as any $8.$something version of cuDNN compatible with CUDA. Lucky for us, NVIDIA already has an image for us to download.\nFROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04 Next is setting the CUDA environment variables so that we can use the GPU in an isolated space.\nENV DEBIAN_FRONTEND noninteractive ENV FORCE_CUDA=\"1\" Here, ENV DEBIAN_FRONTEND noninteractive allows us to not have to deal with interactives prompts such as setting a geographical location or accepting clauses of any library. ENV FORCE_CUDA=\"1\" is used to skip checking CUDA in the machine where docker is being built. It implies that CUDA support is available.\nThen we install the basics needed to download the requirements such as python, git, ninja, etc., and since we do not know which GPU will utilize, we select a list of possible architectures. Here you can see why those numbers. RUN apt-get update \u0026\u0026 \\ apt full-upgrade -y \u0026\u0026 \\ DEBIAN_FRONTEND=noninteractive apt-get install -y python3-dev python3-venv python-is-python3 git curl wget sudo ninja-build \u0026\u0026 \\ rm -rf /var/lib/apt/lists/* ENV TORCH_CUDA_ARCH_LIST=\"8.0;8.6;8.9;9.0\" Next step is copying the needed directories from the repo and installing the libraries (we assume we are building the Dockerfile inside the repo).\nWORKDIR /app COPY . /app/vllm WORKDIR /app/vllm RUN python -m venv --upgrade-deps /app/vllm/venv \u0026\u0026 \\ . /app/vllm/venv/bin/activate \u0026\u0026 \\ pip install --upgrade pip \u0026\u0026 \\ pip install -r requirements.txt \u0026\u0026 \\ pip install transformers \u0026\u0026 \\ pip install accelerate fschat setuptools numpy scipy --upgrade \u0026\u0026 \\ pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121 --upgrade RUN python -m venv --upgrade-deps /app/vllm/venv \u0026\u0026 \\ . /app/vllm/venv/bin/activate \u0026\u0026 \\ pip install wheel \u0026\u0026 \\ pip install vllm RUN . /app/vllm/venv/bin/activate \u0026\u0026 pip install -e . Finally, we allow the container to interact with outside directories. Essentially, it is used to set up a persistent and shareable data storage space specifically for HuggingFace 🤗 cache within the Docker container.\nVOLUME [ \"/root/.cache/huggingface\" ] Dockerfile FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04 ENV DEBIAN_FRONTEND noninteractive ENV FORCE_CUDA=\"1\" RUN apt-get update \u0026\u0026 \\ apt full-upgrade -y \u0026\u0026 \\ DEBIAN_FRONTEND=noninteractive apt-get install -y python3-dev python3-venv python-is-python3 git curl wget sudo ninja-build \u0026\u0026 \\ rm -rf /var/lib/apt/lists/* ENV TORCH_CUDA_ARCH_LIST=\"8.0;8.6;8.9;9.0\" WORKDIR /app COPY . /app/vllm WORKDIR /app/vllm RUN python -m venv --upgrade-deps /app/vllm/venv \u0026\u0026 \\ . /app/vllm/venv/bin/activate \u0026\u0026 \\ pip install --upgrade pip \u0026\u0026 \\ pip install -r requirements.txt \u0026\u0026 \\ pip install transformers \u0026\u0026 \\ pip install accelerate fschat setuptools numpy scipy --upgrade \u0026\u0026 \\ pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121 --upgrade RUN python -m venv --upgrade-deps /app/vllm/venv \u0026\u0026 \\ . /app/vllm/venv/bin/activate \u0026\u0026 \\ pip install wheel \u0026\u0026 \\ pip install vllm RUN . /app/vllm/venv/bin/activate \u0026\u0026 pip install -e . VOLUME [ \"/root/.cache/huggingface\" ] Run it:\nsudo docker build -t -f Dockerfile . Docker Compose The very last step is using docker compose for deploying this Dockerfile.\nversion: \"3.8\" services: vllm-1: image: ports: - \"8000:8000\" ipc: host ulimits: memlock: -1 stack: 67108864 volumes: - ./volumes/cache/huggingface/:/root/.cache/huggingface/ command: bash -c \". /app/vllm/venv/bin/activate \u0026\u0026 cd vllm \u0026\u0026 python -m vllm.entrypoints.openai.api_server --model TheBloke/llama-2-7B-Guanaco-QLoRA-AWQ --tokenizer hf-internal-testing/llama-tokenizer --quantization awq --dtype half --max-model-len 2048 --disable-log-requests\" # mistral 7b awq # command: bash -c \". /app/vllm/venv/bin/activate \u0026\u0026 cd vllm \u0026\u0026 python -m vllm.entrypoints.openai.api_server --model TheBloke/Mistral-7B-v0.1-AWQ --quantization awq --dtype half --max-model-len 8096 --disable-log-requests\" stdin_open: true tty: true deploy: resources: reservations: devices: - driver: nvidia device_ids: [ '0' ] capabilities: [ gpu ] Conclusion Docker is a powerful tool for AI in production. Knowing the right techniques for its usage goes a long way in simplifying how we run applications and avoid redundancy.\n",
+  "wordCount" : "903",
   "inLanguage": "en",
   "image":"https://guialfaro053.github.io/nlp/nlp1/docker.png","datePublished": "0001-01-01T00:00:00Z",
   "dateModified": "0001-01-01T00:00:00Z",
@@ -176,54 +176,123 @@
 </div>
   </header> 
   <div class="post-content"><h2 id="overview">Overview</h2>
-<p>The dataset contains information on this and that in various contries. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Docker is a great tool for isolating pieces of code or a whole app. You can think of it as a super tiny but efficient virtual machine that has the purpose a running a specific piece of code. Many Docker containers start by downloading a base image and start building of top of it. Similar to downloading an operative system and adding the programs and application you want to use.</p>
+<p>In AI development, building Docker containers plays a fundamental role in production. In practice, it saves us a lot of work having <em>Docker containers</em> that can readily run our code instead of running settings and <code>pip install -r requirements.txt</code> every single time, and on top of that, Docker containers are production-friendly!</p>
+<p>It gets a little bit tricky when our code utilizes GPU. Since we are a building an isolated container that can run in any computer with any specifications, we try to generalize many pieces of code. What I mean by this is that the our code should be able to work in any machine, and thus, we have to build our code as machine-agnostic as possible. If you have worked with applications that use CUDA, more often than not, we have to specify versions, directories, etc., so that our code can run. CUDA and cuDNN can be hard to get used to at first. So, I decided to do a hands-on example of building a Docker container where CUDA is needed.</p>
 <hr>
-<h2 id="download">Download</h2>
-<ul>
-<li><a href="https://github.com/pmichaillat/stimulus-spending" target="_blank">Dataset: Country 1</a>
-</li>
-<li><a href="https://github.com/pmichaillat/wunk" target="_blank">Dataset: Country 2</a>
-</li>
-<li><a href="https://github.com/pmichaillat/pricing-with-fairness" target="_blank">Dataset: Country 3</a>
-</li>
-</ul>
+<h2 id="task">Task</h2>
+<p>We will containerize a really nice library used for inference of LLMs: <a href="https://github.com/vllm-project/vllm" target="_blank">vLLM</a>
+
+If you are not familiarized with this library, tldr: It is a library that leverages <a href="https://arxiv.org/pdf/2309.06180.pdf" target="_blank">paged attention</a>
+ for high throughput by strategically allocating KV caching in memory.</p>
 <hr>
-<h2 id="source-of-data">Source of data</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<hr>
-<h2 id="description-of-variables">Description of variables</h2>
-<ul>
-<li>Lorem ipsum dolor sit amet</li>
-<li>consectetur adipisicing elit</li>
-<li>sed do eiusmod</li>
-<li>tempor incididunt ut labore et dolore magna aliqua</li>
-<li>Ut enim ad minim veniam</li>
-<li>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur.</li>
-</ul>
-<hr>
-<h2 id="using-the-data-with-software-1">Using the data with software 1</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<hr>
-<h2 id="using-the-data-with-software-2">Using the data with software 2</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<h2 id="containerization">Containerization</h2>
+<p>The first step for containerizng vLLM is knowing the requirements needed to run it. Upon close inspection in the library we see that we need CUDA $18.1$ or CUDA $12.1$. I&rsquo;d suggest we go with CUDA $12.1$ as vLLM is more optimized in that environment as well as any $8.$something version of cuDNN compatible with CUDA. Lucky for us, NVIDIA already has an image for us to download.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Docker" data-lang="Docker"><span style="display:flex;"><span><span style="color:#00a">FROM</span><span style="color:#a50"> nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04 </span><span style="color:#f00;background-color:#faa">
+</span></span></span></code></pre></div><p>Next is setting the CUDA environment variables so that we can use the GPU in an isolated space.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Docker" data-lang="Docker"><span style="display:flex;"><span><span style="color:#00a">ENV</span> DEBIAN_FRONTEND noninteractive<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">ENV</span> <span style="color:#a00">FORCE_CUDA</span>=<span style="color:#a50">&#34;1&#34;</span><span style="color:#f00;background-color:#faa">
+</span></span></span></code></pre></div><p>Here, <code>ENV DEBIAN_FRONTEND noninteractive</code> allows us to not have to deal with interactives prompts such as setting a geographical location or accepting clauses of any library. <code>ENV FORCE_CUDA=&quot;1&quot;</code> is used to skip checking CUDA in the machine where docker is being built. It implies that CUDA support is available.</p>
+<p>Then we install the basics needed to download the requirements such as python, git, ninja, etc., and since we do not know which GPU will utilize, we select a list of possible architectures. Here you can see why <a href="https://stackoverflow.com/questions/68496906/pytorch-installation-for-different-cuda-architectures" target="_blank">those numbers.</a>
+</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Docker" data-lang="Docker"><span style="display:flex;"><span><span style="color:#00a">RUN</span> apt-get update &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>apt full-upgrade -y &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span><span style="color:#a00">DEBIAN_FRONTEND</span>=noninteractive apt-get install -y python3-dev python3-venv python-is-python3 git curl wget sudo ninja-build &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>rm -rf /var/lib/apt/lists/*<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">ENV</span> <span style="color:#a00">TORCH_CUDA_ARCH_LIST</span>=<span style="color:#a50">&#34;8.0;8.6;8.9;9.0&#34;</span><span style="color:#f00;background-color:#faa">
+</span></span></span></code></pre></div><p>Next step is copying the needed directories from the repo and installing the libraries (we assume we are building the Dockerfile inside the repo).</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Docker" data-lang="Docker"><span style="display:flex;"><span><span style="color:#00a">WORKDIR</span><span style="color:#a50"> /app</span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">COPY</span> . /app/vllm<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">WORKDIR</span><span style="color:#a50"> /app/vllm</span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">RUN</span> python -m venv --upgrade-deps /app/vllm/venv &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   . /app/vllm/venv/bin/activate &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install --upgrade pip &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install -r requirements.txt &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install transformers &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install accelerate fschat setuptools numpy scipy --upgrade &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install <span style="color:#a00">torch</span>==2.1.0 <span style="color:#a00">torchvision</span>==0.16.0 <span style="color:#a00">torchaudio</span>==2.1.0 --index-url https://download.pytorch.org/whl/cu121 --upgrade<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">RUN</span> python -m venv --upgrade-deps /app/vllm/venv &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   . /app/vllm/venv/bin/activate &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install wheel &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install vllm<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">RUN</span> . /app/vllm/venv/bin/activate &amp;&amp; pip install -e .<span style="color:#f00;background-color:#faa">
+</span></span></span></code></pre></div><p>Finally, we allow the container to interact with outside directories. Essentially, it is used to set up a persistent and shareable data storage space specifically for HuggingFace 🤗 cache within the Docker container.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Docker" data-lang="Docker"><span style="display:flex;"><span><span style="color:#00a">VOLUME</span> [ <span style="color:#a50">&#34;/root/.cache/huggingface&#34;</span> ]<span style="color:#f00;background-color:#faa">
+</span></span></span></code></pre></div><hr>
+<h2 id="dockerfile">Dockerfile</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Docker" data-lang="Docker"><span style="display:flex;"><span><span style="color:#00a">FROM</span><span style="color:#a50"> nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04 </span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">ENV</span> DEBIAN_FRONTEND noninteractive<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">ENV</span> <span style="color:#a00">FORCE_CUDA</span>=<span style="color:#a50">&#34;1&#34;</span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">RUN</span> apt-get update &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>apt full-upgrade -y &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span><span style="color:#a00">DEBIAN_FRONTEND</span>=noninteractive apt-get install -y python3-dev python3-venv python-is-python3 git curl wget sudo ninja-build &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>rm -rf /var/lib/apt/lists/*<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">ENV</span> <span style="color:#a00">TORCH_CUDA_ARCH_LIST</span>=<span style="color:#a50">&#34;8.0;8.6;8.9;9.0&#34;</span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">WORKDIR</span><span style="color:#a50"> /app</span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">COPY</span> . /app/vllm<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">WORKDIR</span><span style="color:#a50"> /app/vllm</span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">RUN</span> python -m venv --upgrade-deps /app/vllm/venv &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   . /app/vllm/venv/bin/activate &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install --upgrade pip &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install -r requirements.txt &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install transformers &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install accelerate fschat setuptools numpy scipy --upgrade &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install <span style="color:#a00">torch</span>==2.1.0 <span style="color:#a00">torchvision</span>==0.16.0 <span style="color:#a00">torchaudio</span>==2.1.0 --index-url https://download.pytorch.org/whl/cu121 --upgrade<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">RUN</span> python -m venv --upgrade-deps /app/vllm/venv &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   . /app/vllm/venv/bin/activate &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install wheel &amp;&amp; <span style="color:#a50">\
+</span></span></span><span style="display:flex;"><span><span style="color:#a50"></span>   pip install vllm<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">RUN</span> . /app/vllm/venv/bin/activate &amp;&amp; pip install -e .<span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa">
+</span></span></span><span style="display:flex;"><span><span style="color:#f00;background-color:#faa"></span><span style="color:#00a">VOLUME</span> [ <span style="color:#a50">&#34;/root/.cache/huggingface&#34;</span> ]<span style="color:#f00;background-color:#faa">
+</span></span></span></code></pre></div><p>Run it:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo docker build -t &lt;tag&gt; -f Dockerfile .
+</span></span></code></pre></div><hr>
+<h2 id="docker-compose">Docker Compose</h2>
+<p>The very last step is using docker compose for deploying this Dockerfile.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#1e90ff;font-weight:bold">version</span>:<span style="color:#bbb"> </span><span style="color:#a50">&#34;3.8&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#1e90ff;font-weight:bold">services</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#1e90ff;font-weight:bold">vllm-1</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">image</span>:<span style="color:#bbb"> </span>&lt;tag&gt;<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">ports</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">     </span>- <span style="color:#a50">&#34;8000:8000&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">ipc</span>:<span style="color:#bbb"> </span>host<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">ulimits</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">     </span><span style="color:#1e90ff;font-weight:bold">memlock</span>:<span style="color:#bbb"> </span>-<span style="color:#099">1</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">     </span><span style="color:#1e90ff;font-weight:bold">stack</span>:<span style="color:#bbb"> </span><span style="color:#099">67108864</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">volumes</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">     </span>- ./volumes/cache/huggingface/:/root/.cache/huggingface/<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">command</span>:<span style="color:#bbb"> </span>bash -c &#34;. /app/vllm/venv/bin/activate &amp;&amp; cd vllm &amp;&amp; python -m vllm.entrypoints.openai.api_server --model TheBloke/llama-2-7B-Guanaco-QLoRA-AWQ --tokenizer hf-internal-testing/llama-tokenizer --quantization awq --dtype half --max-model-len 2048 --disable-log-requests&#34; <span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#aaa;font-style:italic"># mistral 7b awq</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#aaa;font-style:italic"># command: bash -c &#34;. /app/vllm/venv/bin/activate &amp;&amp; cd vllm &amp;&amp; python -m vllm.entrypoints.openai.api_server --model TheBloke/Mistral-7B-v0.1-AWQ --quantization awq --dtype half --max-model-len 8096 --disable-log-requests&#34; </span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">stdin_open</span>:<span style="color:#bbb"> </span><span style="color:#00a">true</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">tty</span>:<span style="color:#bbb"> </span><span style="color:#00a">true</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#1e90ff;font-weight:bold">deploy</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">     </span><span style="color:#1e90ff;font-weight:bold">resources</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">       </span><span style="color:#1e90ff;font-weight:bold">reservations</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">         </span><span style="color:#1e90ff;font-weight:bold">devices</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">           </span>- <span style="color:#1e90ff;font-weight:bold">driver</span>:<span style="color:#bbb"> </span>nvidia<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">             </span><span style="color:#1e90ff;font-weight:bold">device_ids</span>:<span style="color:#bbb"> </span>[<span style="color:#bbb"> </span><span style="color:#a50">&#39;0&#39;</span><span style="color:#bbb"> </span>]<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">             </span><span style="color:#1e90ff;font-weight:bold">capabilities</span>:<span style="color:#bbb"> </span>[<span style="color:#bbb"> </span>gpu ]<span style="color:#bbb">
+</span></span></span></code></pre></div><hr>
+<h2 id="conclusion">Conclusion</h2>
+<p>Docker is a powerful tool for AI in production. Knowing the right techniques for its usage goes a long way in simplifying how we run applications and avoid redundancy.</p>
 
   </div>
 
@@ -231,6 +300,7 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     <ul class="post-tags">
       <li><a href="https://guialfaro053.github.io/tags/docker/">Docker</a></li>
       <li><a href="https://guialfaro053.github.io/tags/gpu/">GPU</a></li>
+      <li><a href="https://guialfaro053.github.io/tags/nlp/">NLP</a></li>
     </ul>
   </footer>
 </article>
