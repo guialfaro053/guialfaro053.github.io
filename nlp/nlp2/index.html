@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Solving an old physics problem | Guillermo Alfaro</title>
+<meta name="keywords" content="Physics, Series, Mechanics">
+<meta name="description" content="A couple of days ago, I found my old physics books and decided to remember the good ol&rsquo; days and while doing so, I found a problem I proposed for the Salvadoran Physics Olympiad and wanted to share the solution. I will try my best to properly translate from Spanish it to English.">
+<meta name="author" content="Guillermo Alfaro. July 2025">
+<link rel="canonical" href="https://guialfaro053.github.io/nlp/nlp2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e6a5e88e2db154a472506061adb422506c68763f439560b2fdaea2816aecdbd6.css" integrity="sha256-5qXoji2xVKRyUGBhrbQiUGxodj9DlWCy/a6igWrs29Y=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://guialfaro053.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://guialfaro053.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://guialfaro053.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://guialfaro053.github.io/apple-touch-icon.png">
+
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Solving an old physics problem" />
+<meta property="og:description" content="A couple of days ago, I found my old physics books and decided to remember the good ol&rsquo; days and while doing so, I found a problem I proposed for the Salvadoran Physics Olympiad and wanted to share the solution. I will try my best to properly translate from Spanish it to English." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://guialfaro053.github.io/nlp/nlp2/" />
+<meta property="og:image" content="https://guialfaro053.github.io/nlp/nlp2/cannon.png" /><meta property="article:section" content="nlp" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://guialfaro053.github.io/nlp/nlp2/cannon.png" />
+<meta name="twitter:title" content="Solving an old physics problem"/>
+<meta name="twitter:description" content="A couple of days ago, I found my old physics books and decided to remember the good ol&rsquo; days and while doing so, I found a problem I proposed for the Salvadoran Physics Olympiad and wanted to share the solution. I will try my best to properly translate from Spanish it to English."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "NLP",
+      "item": "https://guialfaro053.github.io/nlp/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Solving an old physics problem",
+      "item": "https://guialfaro053.github.io/nlp/nlp2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Solving an old physics problem",
+  "name": "Solving an old physics problem",
+  "description": "A couple of days ago, I found my old physics books and decided to remember the good ol\u0026rsquo; days and while doing so, I found a problem I proposed for the Salvadoran Physics Olympiad and wanted to share the solution. I will try my best to properly translate from Spanish it to English.",
+  "keywords": [
+    "Physics", "Series", "Mechanics"
+  ],
+  "articleBody": "A couple of days ago, I found my old physics books and decided to remember the good ol’ days and while doing so, I found a problem I propose for the Salvadoran Physics Olympiad and wanted to share the solution. I will try my best to properly translate it to English.\nProblem In outer space, where gravity can be discarded, Bobby takes the cannon that Nacho gave him as a birthday present. There he sees a glass sheet at a distance $l$. Behind the first glass sheet, there is an infinite number of glass sheet and the distance between them, gets reduced by 2 as seen in the image below.\nBobby ignites the cannon and the ball hits the glass sheet. The glass sheet breaks and bounces back from the cannon. Assume that throughout this process, no energy is loss, momentum is conserved and the mass of the glass sheet is insignificant compared to the ball. This process continues until it breaks $n$ glass sheets. Bobby asks himself:\nWhat is the position of the ball when it reaches the $n^{\\text{th}}$ sheet. What is the distance of the ball has traveled when it reaches the $n^{\\text{th}}$ sheet. Time taken to reach the $n^{\\text{th}}$ sheet. Assume an initial velocity of $v$. Solution First problem Let’s assume that the when the ball hits the first glass sheet, it’s in position $(0, l)$. Thus, $p_1 = (0, l)$. If we extrapolate this behavior we can see that:\n$$p_2 = \\left( 0, l + \\frac{l}{2} \\right)$$ $$p_3 = \\left( 0, l + \\frac{l}{2} + \\frac{l}{4} \\right)$$ $$p_4 = \\left( 0, l + \\frac{l}{2} + \\frac{l}{4} + \\frac{l}{8}\\right)$$ $$\\dots$$\nWe see that this is just a geometric series, and thus, we can generalize this to:\n$$ p_n = \\left( 0, \\sum_{k=0}^{n-1}l \\left( \\frac{1}{2}\\right)^k \\right) = \\left( 0, l\\frac{1 - \\bigl(\\tfrac12\\bigr)^{n}}{1 - \\tfrac12} \\right) = \\left( 0, 2l\\Bigl(1 - \\frac{1}{2^{n}}\\Bigr) \\right), \\qquad n\\ge1. $$\nSecond problem This one is very similar to first part, with the difference that the distances keep adding up. The ball is first launched and it travels a distance $l$ towards the first glass sheet and another $l$ back to the cannon. Then, it goes back to git the second glass sheet and it travels an extra distance $l + l/2$, and the overall distance would $l + l + l + l/2 = 3l + l/2$. If we keep this process, a very interesting pattern appears:\n$$ d_n = d_{n-1} + 2d_{n-1} + \\frac{\\ell}{2^{n-1}} = 3d_{n-1} + \\frac{\\ell}{2^{n-1}}, \\qquad d_1 = \\ell. $$\nIt doesn’t long to solve and the final result I got was:\n$$ d_n = \\frac{2l}{5} \\left( 3^n - \\frac{1}{2^n} \\right) $$\nJust a quick sanity check: $$ d_1 = \\frac{2l}{5} \\left( 3^1 - \\frac{1}{2^1} \\right) = \\frac{2l}{5} \\left(3 - 0.5\\right) = \\frac{2l}{5} \\cdot 2.5 = l $$\n$$ d_2 = 3d_1 + \\frac{l}{2^{2-1}} = 3l + \\frac{l}{2} = \\frac{7l}{2}, \\quad \\text{and} \\quad \\frac{2l}{5} \\left(3^2 - \\frac{1}{2^2}\\right) = \\frac{2l}{5} \\left(9 - 0.25\\right) = \\frac{7l}{2} $$\nThird problem Given the distance found in problem 2, we can find the time taken to reach the $n^{\\text{th}}$ sheet by dividing distance over velocity. We can do this because we assumed that no energy was lost during collisions and the velocity remains the same. Thus:\n$$ t_n = \\frac{2l}{5v} \\left( 3^n - \\frac{1}{2^n} \\right) $$\nAnd just for the heck of it, how about now we assume that the collisions are not longer elastic and after each collision, the velocity is reduced $\\eta$ times. If you send me the solution for this problem, 삼겹살 is on me.\n",
+  "wordCount" : "594",
+  "inLanguage": "en",
+  "image":"https://guialfaro053.github.io/nlp/nlp2/cannon.png","datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "author":[{
+    "@type": "Person",
+    "name": "Guillermo Alfaro. July 2025"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://guialfaro053.github.io/nlp/nlp2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Guillermo Alfaro",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://guialfaro053.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css" integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js" integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+            {left: "\\begin{equation*}", right: "\\end{equation*}", display: true},
+            {left: "\\begin{align}", right: "\\end{align}", display: true},
+            {left: "\\begin{align*}", right: "\\end{align*}", display: true},
+            {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+            {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+            {left: "\\begin{CD}", right: "\\end{CD}", display: true},
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+ 
+
+
+</head>
+
+<body class="" id="top">
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://guialfaro053.github.io/" accesskey="h" title="Guillermo Alfaro">
+             
+                <img src="https://guialfaro053.github.io/favicon.ico" alt="" aria-label="logo"
+                    height="18"
+                    width="18">Guillermo Alfaro</a>
+            <div class="logo-switches">
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://guialfaro053.github.io/nlp/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Solving an old physics problem
+    </h1>
+    <div class="post-meta">Guillermo Alfaro. July 2025
+
+</div>
+  </header> 
+  <div class="post-content"><p>A couple of days ago, I found my old physics books and decided to remember the good ol&rsquo; days and while doing so, I found a problem I propose for the Salvadoran Physics Olympiad and wanted to share the solution. I will try my best to properly translate it to English.</p>
+<h2 id="problem">Problem</h2>
+<p>In outer space, where gravity can be discarded, Bobby takes the cannon that Nacho gave him as a birthday present. There he sees a glass sheet at a distance $l$. Behind the first glass sheet, there is an infinite number of glass sheet and the distance between them, gets reduced by 2 as seen in the image below.</p>
+<p><img loading="lazy" src="cannon.png" alt="cannon"  />
+</p>
+<p>Bobby ignites the cannon and the ball hits the glass sheet. The glass sheet breaks and bounces back from the cannon. Assume that throughout this process, no energy is loss, momentum is conserved and the mass of the glass sheet is insignificant compared to the ball. This process continues until it breaks $n$ glass sheets. Bobby asks himself:</p>
+<ol>
+<li>What is the position of the ball when it reaches the $n^{\text{th}}$ sheet.</li>
+<li>What is the distance of the ball has traveled when it reaches the $n^{\text{th}}$ sheet.</li>
+<li>Time taken to reach the $n^{\text{th}}$ sheet. Assume an initial velocity of $v$.</li>
+</ol>
+<h2 id="solution">Solution</h2>
+<h3 id="first-problem">First problem</h3>
+<p>Let&rsquo;s assume that the when the ball hits the first glass sheet, it&rsquo;s in position $(0, l)$. Thus, $p_1 = (0, l)$. If we extrapolate this behavior we can see that:</p>
+<p>$$p_2 = \left( 0, l + \frac{l}{2} \right)$$
+$$p_3 = \left( 0, l + \frac{l}{2} + \frac{l}{4} \right)$$
+$$p_4 = \left( 0, l + \frac{l}{2} + \frac{l}{4} +  \frac{l}{8}\right)$$
+$$\dots$$</p>
+<p>We see that this is just a geometric series, and thus, we can generalize this to:</p>
+<p>$$
+p_n = \left( 0, \sum_{k=0}^{n-1}l \left( \frac{1}{2}\right)^k \right) = \left( 0, l\frac{1 - \bigl(\tfrac12\bigr)^{n}}{1 - \tfrac12} \right) = \left( 0, 2l\Bigl(1 - \frac{1}{2^{n}}\Bigr) \right),
+\qquad n\ge1.
+$$</p>
+<h3 id="second-problem">Second problem</h3>
+<p>This one is very similar to first part, with the difference that the distances keep adding up. The ball is first launched and it travels a distance $l$ towards the first glass sheet and another $l$ back to the cannon. Then, it goes back to git the second glass sheet and it travels an extra distance $l + l/2$, and the overall distance would $l + l + l + l/2 = 3l + l/2$. If we keep this process, a very interesting pattern appears:</p>
+<p>$$
+d_n = d_{n-1} + 2d_{n-1} + \frac{\ell}{2^{n-1}} = 3d_{n-1} + \frac{\ell}{2^{n-1}},
+\qquad d_1 = \ell.
+$$</p>
+<p>It doesn&rsquo;t long to solve and the final result I got was:</p>
+<p>$$
+d_n = \frac{2l}{5} \left( 3^n - \frac{1}{2^n} \right)
+$$</p>
+<p>Just a quick sanity check:
+$$
+d_1 = \frac{2l}{5} \left( 3^1 - \frac{1}{2^1} \right) = \frac{2l}{5} \left(3 - 0.5\right) = \frac{2l}{5} \cdot 2.5 = l
+$$</p>
+<p>$$
+d_2 = 3d_1 + \frac{l}{2^{2-1}} = 3l + \frac{l}{2} = \frac{7l}{2}, \quad \text{and} \quad \frac{2l}{5} \left(3^2 - \frac{1}{2^2}\right) = \frac{2l}{5} \left(9 - 0.25\right) = \frac{7l}{2}
+$$</p>
+<h3 id="third-problem">Third problem</h3>
+<p>Given the distance found in problem 2, we can find the time taken to reach the $n^{\text{th}}$ sheet by dividing distance over velocity. We can do this because we assumed that no energy was lost during collisions and the velocity remains the same. Thus:</p>
+<p>$$
+t_n = \frac{2l}{5v} \left( 3^n - \frac{1}{2^n} \right)
+$$</p>
+<p>And just for the heck of it, how about now we assume that the collisions are not longer elastic and after each collision, the velocity is reduced $\eta$ times. If you send me the solution for this problem, 삼겹살 is on me.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://guialfaro053.github.io/tags/physics/">Physics</a></li>
+      <li><a href="https://guialfaro053.github.io/tags/series/">Series</a></li>
+      <li><a href="https://guialfaro053.github.io/tags/mechanics/">Mechanics</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    &copy; 2025 Guillermo Alfaro
+    <span>
+    &middot;  Powered by 
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/pmichaillat/hugo-website/" rel="noopener" target="_blank">a modified version</a>
+         of 
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+</html>

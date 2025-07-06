@@ -6,6 +6,14 @@
     <description>Recent content on Guillermo Alfaro</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language><atom:link href="https://guialfaro053.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Solving an old physics problem</title>
+      <link>https://guialfaro053.github.io/nlp/nlp2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://guialfaro053.github.io/nlp/nlp2/</guid>
+      <description>A couple of days ago, I found my old physics books and decided to remember the good ol&amp;rsquo; days and while doing so, I found a problem I proposed for the Salvadoran Physics Olympiad and wanted to share the solution. I will try my best to properly translate from Spanish it to English.</description>
+    </item>
     
     <item>
       <title>Building Docker Containers for GPU Applications</title>
@@ -15,6 +23,7 @@
       <guid>https://guialfaro053.github.io/nlp/nlp1/</guid>
       <description>Description on some hacks to build a Docker containers that use GPU </description>
     </item>
+    
     
     <item>
       <title>Location</title>

@@ -2,9 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://guialfaro053.github.io/archive/</loc>
+    <loc>https://guialfaro053.github.io/nlp/nlp2/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/nlp/nlp1/</loc>
+  </url><url>
+    <loc>https://guialfaro053.github.io/archive/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/tags/docker/</loc>
   </url><url>
@@ -14,11 +16,17 @@
   </url><url>
     <loc>https://guialfaro053.github.io/location/</loc>
   </url><url>
+    <loc>https://guialfaro053.github.io/tags/mechanics/</loc>
+  </url><url>
     <loc>https://guialfaro053.github.io/tags/nlp/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/nlp/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/officehours/</loc>
+  </url><url>
+    <loc>https://guialfaro053.github.io/tags/physics/</loc>
+  </url><url>
+    <loc>https://guialfaro053.github.io/tags/series/</loc>
   </url><url>
     <loc>https://guialfaro053.github.io/tags/</loc>
   </url>
